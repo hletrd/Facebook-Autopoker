@@ -29,12 +29,12 @@ while(1) {
 		}
 
 		if (strpos($data, "sentry") !== false) {
-			echo 'Failed to poke ' . $names[2][$key] . '(' . $names[1][$key] . ') - ' . date('Y-m-d H:i:s');
+			echo 'Failed to poke - ' . $names[2][$key] . '(' . $names[1][$key] . ') - ' . date('Y-m-d H:i:s');
 			sleep(600);
 		} else if (strpos($data, "success") !== false) {
-			echo 'Poked ' . $names[2][$key] . '(' . $names[1][$key] . ') - ' . date('Y-m-d H:i:s');
+			echo 'Poked - ' . $names[2][$key] . '(' . $names[1][$key] . ') - ' . date('Y-m-d H:i:s');
 		} else {
-			echo '??? ' . $names[2][$key] . '(' . $names[1][$key] . ') - ' . date('Y-m-d H:i:s');
+			echo 'Result unknown -  ' . $names[2][$key] . '(' . $names[1][$key] . ') - ' . date('Y-m-d H:i:s');
 		}
 		echo "\n";
 	}
