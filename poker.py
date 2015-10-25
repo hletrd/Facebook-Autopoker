@@ -1,7 +1,6 @@
 import httplib
 import threading
 import re
-import datetime
 import time
 
 c_user = ''
@@ -25,10 +24,10 @@ class poke(threading.Thread):
 		resp_headers = resp.getheaders()
 		for i in resp_headers:
 			if 'success' in i[1]:
-				print 'Poked ' + self.name + '(' + self.userid + ') - ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+				print 'Poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 				break
 			elif 'sentry' in i[1]:
-				print 'Failed to poke ' + self.name + '(' + self.userid + ') - ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+				print 'Failed to poke ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 				global resting
 				resting = True
 				break
