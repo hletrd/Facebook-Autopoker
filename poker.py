@@ -2,12 +2,21 @@ import httplib
 import threading
 import re
 import time
+import sqlite3
 
 c_user = ''
 xs = ''
+db = 'log.db'
 
 headers = {'Cookie': 'c_user=' + c_user + '; xs=' + xs}
 resting = False
+dbc = sqlite3.connect(db, check_same_thread=False)
+dbc.text_factory = str
+c = dbc.cursor()
+try:
+	c.execute('CREATE TABLE log(date TEXT, name TEXT, userid TEXT, result INT)')
+except:
+	pass
 
 class poke(threading.Thread):
 	def __init__(self, url, name, userid):
@@ -25,9 +34,13 @@ class poke(threading.Thread):
 		for i in resp_headers:
 			if 'success' in i[1]:
 				print 'Poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 1))
+				dbc.commit()
 				break
 			elif 'sentry' in i[1]:
 				print 'Failed to poke ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 0))
+				dbc.commit()
 				global resting
 				resting = True
 				break
@@ -37,7 +50,7 @@ def timer():
 	if resting == True:
 		time.sleep(300)
 		resting = False
-	threading.Timer(1.0, timer).start()
+	threading.Timer(0.5, timer).start()
 	conn = httplib.HTTPSConnection('m.facebook.com')
 	conn.request('GET', '/pokes', '', headers)
 	resp = conn.getresponse()
