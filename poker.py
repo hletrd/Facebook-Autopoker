@@ -50,6 +50,7 @@ def timer():
 		if 'profile.php?id=' in userid:
 			userid = re.search(r'[0-9]+', userid).group(0)
 		t = poke(j.replace('&amp;', '&'), names[i][1], userid)
+		t.daemon = True
 		t.start()
 
 timer()
