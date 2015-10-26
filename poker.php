@@ -2,7 +2,7 @@
 define("COOKIE_c_user", '');
 define("COOKIE_xs", '');
 
-date_default_timezone_set('Asia/Seoul');
+//date_default_timezone_set('Asia/Seoul');
 set_time_limit(0);
 
 $cookie = 'xs=' . COOKIE_xs . '; c_user=' . COOKIE_c_user;
