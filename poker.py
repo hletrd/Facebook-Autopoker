@@ -15,6 +15,8 @@ import sqlite3
 
 headers = {'Cookie': 'c_user=' + c_user + '; xs=' + xs}
 resting = False
+poking = []
+
 dbc = sqlite3.connect(db, check_same_thread=False)
 dbc.text_factory = str
 c = dbc.cursor()
@@ -36,7 +38,7 @@ class poke(threading.Thread):
 		self.c = self.dbc.cursor()
 
 	def run(self):
-		global resting
+		global resting, poking
 		if resting == True:
 			return
 		if python3 == True:
@@ -62,19 +64,30 @@ class poke(threading.Thread):
 				self.dbc.close()
 				break
 			elif 'pending' in i[1]:
-				#print('Already poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
-				#self.c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 2))
-				#self.dbc.commit()
-				#self.dbc.close()
+				print('Already poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+				self.c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 2))
+				self.dbc.commit()
+				self.dbc.close()
 				break
+		poking = list(filter(lambda x: x != self.userid, poking))
+
+class waiter(threading.Thread):
+	def __init(self, seconds):
+		threading.Thread.__init__(self)
+		self.seconds = seconds
+
+	def run(self):
+		time.sleep(self.seconds)
 
 def timer():
 	global resting
 	if resting == True:
 		try:
-			for i in range(300):
-				time.sleep(1)
+			w = waiter(60)
+			w.start()
+			w.join()
 		except KeyboardInterrupt:
+			w.notify()
 			pass
 		resting = False
 	threading.Timer(0.5, timer).start()
@@ -94,8 +107,11 @@ def timer():
 		userid = names[i][0]
 		if 'profile.php?id=' in userid:
 			userid = re.search(r'[0-9]+', userid).group(0)
-		t = poke(j.replace('&amp;', '&'), names[i][1], userid)
-		t.daemon = True
-		t.start()
+		if not userid in poking:
+			poking.append(userid)
+			t = poke(j.replace('&amp;', '&'), names[i][1], userid)
+			t.daemon = True
+			t.start()
 
-timer()
+if __name__ == '__main__':
+	timer()
