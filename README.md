@@ -1,10 +1,9 @@
-# PyPoker
-* The only multithreaded Facebook autopoker
-* Fully multithreaded, speed is not affected by number of person being poked concurrently.
- * Multithreading is not supported by PHP(poker.php)
-* Supports Python 2.7, Python 3
+# Facebook Autopoker
+* The only multithreaded Facebook autopoker (PyPoker only)
+* Fully multithreaded, speed is not affected by number of person being poked concurrently. (PyPoker only)
+* Supports Python 2.7, Python 3 (PyPoker)
 
-## Running (by Python, recommended)
+## Running PyPoker (Recommended)
 * Open poker.py by any text editor, and type rerquired informations in.
 ```python
 c_user = 'Your Facebook cookie: c_user'
@@ -16,7 +15,7 @@ db = 'filename that log will be stored'
 $ python poker.py
 ```
 
-## Running (by PHP)
+## Running PHPPoker
 * Open poker.php by any text editor, and type rerquired informations in.
 ```php
 define("COOKIE_c_user", 'Your Facebook cookie: c_user');
