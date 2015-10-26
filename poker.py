@@ -1,12 +1,17 @@
-import httplib
+c_user = ''
+xs = ''
+db = 'log.db'
+
+try:
+	import httplib
+	python3 = False
+except:
+	import http.client
+	python3 = True
 import threading
 import re
 import time
 import sqlite3
-
-c_user = ''
-xs = ''
-db = 'log.db'
 
 headers = {'Cookie': 'c_user=' + c_user + '; xs=' + xs}
 resting = False
@@ -26,35 +31,46 @@ class poke(threading.Thread):
 		self.userid = userid
 
 	def run(self):
-		conn = httplib.HTTPSConnection('m.facebook.com')
+		global resting
+		if resting == True:
+			return
+		if python3 == True:
+			conn = http.client.HTTPSConnection('m.facebook.com')
+		else:
+			conn = httplib.HTTPSConnection('m.facebook.com')
 		conn.request('GET', '/pokes/inline/' + self.url, '', headers)
 		resp = conn.getresponse()
 		rest = resp.read()
 		resp_headers = resp.getheaders()
 		for i in resp_headers:
 			if 'success' in i[1]:
-				print 'Poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+				print('Poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 1))
 				dbc.commit()
 				break
 			elif 'sentry' in i[1]:
-				print 'Failed to poke ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+				resting = True
+				print('Failed to poke ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 0))
 				dbc.commit()
-				global resting
-				resting = True
 				break
 
 def timer():
 	global resting
 	if resting == True:
-		time.sleep(300)
+		for i in range(300):
+			time.sleep(1)
 		resting = False
 	threading.Timer(0.5, timer).start()
-	conn = httplib.HTTPSConnection('m.facebook.com')
+	if python3 == True:
+		conn = http.client.HTTPSConnection('m.facebook.com')
+	else:
+		conn = httplib.HTTPSConnection('m.facebook.com')
 	conn.request('GET', '/pokes', '', headers)
 	resp = conn.getresponse()
 	rest = resp.read()
+	if python3 == True:
+		rest = rest.decode()
 	links = re.findall(r'href="\/pokes\/inline\/([^"]+)">', rest)
 	names = re.findall(r'<a href="\/([^"]+)">([^<]+)<', rest)
 
