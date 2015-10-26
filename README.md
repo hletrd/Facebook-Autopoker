@@ -2,6 +2,7 @@
 * The only multithreaded Facebook autopoker (PyPoker only)
 * Fully multithreaded, speed is not affected by number of person being poked concurrently. (PyPoker only)
 * Supports Python 2.7, Python 3 (PyPoker)
+* Supports SQLite logging (PyPoker only)
 
 ## Running PyPoker (Recommended)
 * Open poker.py by any text editor, and type rerquired informations in.
