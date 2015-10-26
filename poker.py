@@ -54,6 +54,11 @@ class poke(threading.Thread):
 				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 0))
 				dbc.commit()
 				break
+			elif 'pending' in i[1]:
+				print('Already poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 2))
+				dbc.commit()
+				break
 
 def timer():
 	global resting
