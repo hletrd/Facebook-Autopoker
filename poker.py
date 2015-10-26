@@ -22,6 +22,8 @@ try:
 	c.execute('CREATE TABLE log(date TEXT, name TEXT, userid TEXT, result INT)')
 except:
 	pass
+dbc.commit()
+dbc.close()
 
 class poke(threading.Thread):
 	def __init__(self, url, name, userid):
@@ -29,6 +31,9 @@ class poke(threading.Thread):
 		self.url = url
 		self.name = name
 		self.userid = userid
+		self.dbc = sqlite3.connect(db, check_same_thread=False)
+		self.dbc.text_factory = str
+		self.c = self.dbc.cursor()
 
 	def run(self):
 		global resting
@@ -45,19 +50,22 @@ class poke(threading.Thread):
 		for i in resp_headers:
 			if 'success' in i[1]:
 				print('Poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
-				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 1))
-				dbc.commit()
+				self.c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 1))
+				self.dbc.commit()
+				self.dbc.close()
 				break
 			elif 'sentry' in i[1]:
 				resting = True
 				print('Failed to poke ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
-				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 0))
-				dbc.commit()
+				self.c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 0))
+				self.dbc.commit()
+				self.dbc.close()
 				break
 			elif 'pending' in i[1]:
-				print('Already poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
-				c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 2))
-				dbc.commit()
+				#print('Already poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+				#self.c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 2))
+				#self.dbc.commit()
+				#self.dbc.close()
 				break
 
 def timer():
