@@ -72,7 +72,7 @@ class poke(threading.Thread):
 		poking = list(filter(lambda x: x != self.userid, poking))
 
 class waiter(threading.Thread):
-	def __init(self, seconds):
+	def __init__(self, seconds):
 		threading.Thread.__init__(self)
 		self.seconds = seconds
 
