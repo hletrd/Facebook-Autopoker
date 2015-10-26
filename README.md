@@ -22,7 +22,7 @@ define("COOKIE_c_user", 'Your Facebook cookie: c_user');
 define("COOKIE_xs", 'Your Facebook cookie xs');
 ```
 
-*run
+* run
 ```
 $ php poker.php
 ```
