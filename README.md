@@ -2,6 +2,7 @@
 * The only multithreaded Facebook autopoker
 * Fully multithreaded, speed is not affected by number of person being poked concurrently.
  * Multithreading is not supported by PHP(poker.php)
+* Supports Python 2.7, Python 3
 
 ## Running (by Python, recommended)
 * Open poker.py by any text editor, and type rerquired informations in.
