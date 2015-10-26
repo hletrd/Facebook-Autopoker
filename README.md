@@ -17,7 +17,7 @@ db = 'filename that log will be stored'
 $ python poker.py
 ```
 
-### Running monitor for PyPoker
+### Running monitor for PyPoker (Optional)
 * Open poker.py by any text editor, and type rerquired informations in.
  * db have to be the same with PyPoker to monitor the poking activity correctly.
 ```python
