@@ -71,8 +71,11 @@ class poke(threading.Thread):
 def timer():
 	global resting
 	if resting == True:
-		for i in range(300):
-			time.sleep(1)
+		try:
+			for i in range(300):
+				time.sleep(1)
+		except KeyboardInterrupt:
+			pass
 		resting = False
 	threading.Timer(0.5, timer).start()
 	if python3 == True:
