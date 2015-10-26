@@ -71,23 +71,12 @@ class poke(threading.Thread):
 				break
 		poking = list(filter(lambda x: x != self.userid, poking))
 
-class waiter(threading.Thread):
-	def __init__(self, seconds):
-		threading.Thread.__init__(self)
-		self.seconds = seconds
-
-	def run(self):
-		time.sleep(self.seconds)
-
 def timer():
 	global resting
 	if resting == True:
 		try:
-			w = waiter(60)
-			w.start()
-			w.join()
+			threading.Event().wait(300)
 		except KeyboardInterrupt:
-			w.notify()
 			pass
 		resting = False
 	threading.Timer(0.5, timer).start()
