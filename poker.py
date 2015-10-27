@@ -64,43 +64,44 @@ class poke(threading.Thread):
 				self.dbc.close()
 				break
 			elif 'pending' in i[1]:
-				print('Already poked ' + self.name + '(' + self.userid + ') - ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
-				self.c.execute('INSERT INTO log VALUES (?, ?, ?, ?)', (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.name, self.userid, 2))
-				self.dbc.commit()
-				self.dbc.close()
 				break
-		poking = list(filter(lambda x: x != self.userid, poking))
 
-def timer():
-	global resting
-	if resting == True:
-		try:
-			threading.Event().wait(300)
-		except KeyboardInterrupt:
-			pass
-		resting = False
-	threading.Timer(0.5, timer).start()
-	if python3 == True:
-		conn = http.client.HTTPSConnection('m.facebook.com')
-	else:
-		conn = httplib.HTTPSConnection('m.facebook.com')
-	conn.request('GET', '/pokes', '', headers)
-	resp = conn.getresponse()
-	rest = resp.read()
-	if python3 == True:
-		rest = rest.decode()
-	links = re.findall(r'href="\/pokes\/inline\/([^"]+)">', rest)
-	names = re.findall(r'<a href="\/([^"]+)">([^<]+)<', rest)
+class refresh(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
 
-	for i, j in enumerate(links):
-		userid = names[i][0]
-		if 'profile.php?id=' in userid:
-			userid = re.search(r'[0-9]+', userid).group(0)
-		if not userid in poking:
-			poking.append(userid)
+	def run(self):
+		global resting
+		if resting == True:
+			time.sleep(300)
+			resting = False
+		threading.Timer(0.5, run_once).start()
+		if python3 == True:
+			conn = http.client.HTTPSConnection('m.facebook.com')
+		else:
+			conn = httplib.HTTPSConnection('m.facebook.com')
+		conn.request('GET', '/pokes', '', headers)
+		resp = conn.getresponse()
+		rest = resp.read()
+		if python3 == True:
+			rest = rest.decode()
+		links = re.findall(r'href="\/pokes\/inline\/([^"]+)">', rest)
+		names = re.findall(r'<a href="\/([^"]+)">([^<]+)<', rest)
+
+		for i, j in enumerate(links):
+			userid = names[i][0]
+			if 'profile.php?id=' in userid:
+				userid = re.search(r'[0-9]+', userid).group(0)
 			t = poke(j.replace('&amp;', '&'), names[i][1], userid)
 			t.daemon = True
 			t.start()
 
+def run_once():
+	w = refresh()
+	w.daemon = True
+	w.start()
+
 if __name__ == '__main__':
-	timer()
+	run_once()
+	while True:
+		time.sleep(1)
