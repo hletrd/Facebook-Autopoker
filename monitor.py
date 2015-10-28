@@ -24,7 +24,7 @@ while True:
 	c.execute('SELECT COUNT(`date`) FROM log WHERE `date` > datetime(\'' + time.strftime('%Y-%m-%d %H:%M:%S') + '\', \'-24 hours\') AND result=1;')
 	print(str((c.fetchone()[0] * 100 / 1440) / 100.0) + ' ppm for last 24 hours')
 	c.execute('SELECT COUNT(`date`) FROM log WHERE `date` > datetime(\'' + time.strftime('%Y-%m-%d %H:%M:%S') + '\', \'-6 hours\') AND result=1;')
-	print(str((c.fetchone()[0] * 100 / 60) / 100.0) + ' ppm for last 6 hours')
+	print(str((c.fetchone()[0] * 100 / 360) / 100.0) + ' ppm for last 6 hours')
 	c.execute('SELECT COUNT(`date`) FROM log WHERE `date` > datetime(\'' + time.strftime('%Y-%m-%d %H:%M:%S') + '\', \'-1 hours\') AND result=1;')
 	print(str((c.fetchone()[0] * 100 / 60) / 100.0) + ' ppm for last 1 hour')
 	c.execute('SELECT COUNT(`date`) FROM log WHERE `date` > datetime(\'' + time.strftime('%Y-%m-%d %H:%M:%S') + '\', \'-5 minutes\') AND result=1;')
