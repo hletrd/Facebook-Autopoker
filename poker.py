@@ -13,7 +13,7 @@ import re
 import time
 import sqlite3
 
-headers = {'Cookie': 'c_user=' + c_user + '; xs=' + xs}
+headers = {'Cookie': 'c_user=' + c_user + '; xs=' + xs, 'user-agent': 'PyPoker'}
 resting = False
 poking = []
 
