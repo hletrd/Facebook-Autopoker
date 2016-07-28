@@ -6,7 +6,7 @@
 * Supports SQLite logging (PyPoker only)
 
 ## Running PyPoker (Recommended)
-* Open poker.py by any text editor, and type rerquired informations in.
+* Open poker.py by any text editor, and type required informations in.
 ```python
 c_user = 'Your Facebook cookie: c_user'
 xs = 'Your Facebook cookie: xs'
